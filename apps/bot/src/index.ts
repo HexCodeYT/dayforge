@@ -2,14 +2,13 @@ import "dotenv/config";
 import { Bot, session } from "grammy";
 import {
   conversations,
-  createConversation,
-  Conversation,
-  ConversationFlavor
+  createConversation
 } from "@grammyjs/conversations";
 
-type SessionData = Record<string, never>;
-
-type MyContext = ConversationFlavor<any>;
+import { MyContext } from "./types/context.js";
+import { planConversation } from "./conversations/plan.js";
+import { reviewConversation } from "./conversations/review.js";
+import { prisma } from "@dayforge/db";
 
 const token = process.env.BOT_TOKEN;
 
@@ -19,43 +18,30 @@ if (!token) {
 
 const bot = new Bot<MyContext>(token);
 
-async function planConversation(
-  conversation: Conversation<MyContext>,
-  ctx: MyContext
-) {
-  await ctx.reply("Top priority for tomorrow?");
-
-  const priority1 = await conversation.waitFor(":text");
-
-  await ctx.reply("Second priority?");
-
-  const priority2 = await conversation.waitFor(":text");
-
-  await ctx.reply("Third priority?");
-
-  const priority3 = await conversation.waitFor(":text");
-
-  await ctx.reply("Expected wake up time tomorrow?");
-
-  const wakeTime = await conversation.waitFor(":text");
-
-  await ctx.reply(
-    [
-      "Day planned.",
-      "",
-      `1. ${priority1.message.text}`,
-      `2. ${priority2.message.text}`,
-      `3. ${priority3.message.text}`,
-      "",
-      `Wake: ${wakeTime.message.text}`
-    ].join("\n")
-  );
-}
-
-bot.use(session({ initial: (): SessionData => ({}) }));
+bot.use(session({ initial: () => ({}) }));
 
 bot.use(conversations());
+
 bot.use(createConversation(planConversation));
+bot.use(createConversation(reviewConversation));
+
+bot.use(async (ctx, next) => {
+  if (ctx.from) {
+    await prisma.user.upsert({
+      where: {
+        telegramId: String(ctx.from.id)
+      },
+      update: {},
+      create: {
+        telegramId: String(ctx.from.id),
+        username: ctx.from.username,
+        firstName: ctx.from.first_name
+      }
+    });
+  }
+
+  await next();
+});
 
 bot.command("start", async (ctx) => {
   await ctx.reply(
@@ -76,7 +62,7 @@ bot.command("plan", async (ctx) => {
 });
 
 bot.command("review", async (ctx) => {
-  await ctx.reply("Review flow coming next.");
+  await ctx.conversation.enter("reviewConversation");
 });
 
 bot.start();
