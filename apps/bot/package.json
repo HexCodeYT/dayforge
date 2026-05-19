@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@dayforge/db": "workspace:*",
+    "@dayforge/shared": "workspace:*",
     "@grammyjs/conversations": "^2.1.1",
     "dotenv": "^17.4.2",
     "grammy": "^1.43.0"

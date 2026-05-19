@@ -3,6 +3,7 @@ import { prisma } from "@dayforge/db";
 
 import { MyContext } from "../types/context.js";
 import { askText } from "./helpers.js";
+import { todayDate } from "@dayforge/shared";
 
 function parseNumber(value: string): number {
   const cleaned = value.replace(/[^0-9.-]/g, "");
@@ -19,10 +20,6 @@ function parseBoolean(value: string): boolean {
   const normalized = value.trim().toLowerCase();
 
   return ["yes", "y", "true", "done", "completed"].includes(normalized);
-}
-
-function todayDate(): Date {
-  return new Date(new Date().toDateString());
 }
 
 export async function reviewConversation(

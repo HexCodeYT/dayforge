@@ -222,6 +222,9 @@ importers:
       '@dayforge/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@dayforge/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@grammyjs/conversations':
         specifier: ^2.1.1
         version: 2.1.1(grammy@1.43.0)
@@ -263,6 +266,8 @@ importers:
       prisma:
         specifier: ^7.8.0
         version: 7.8.0(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+
+  packages/shared: {}
 
 packages:
 

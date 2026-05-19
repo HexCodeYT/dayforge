@@ -8,6 +8,7 @@ import {
 import { MyContext } from "./types/context.js";
 import { planConversation } from "./conversations/plan.js";
 import { reviewConversation } from "./conversations/review.js";
+import { todayCommand } from "./commands/today.js";
 import { prisma } from "@dayforge/db";
 
 const token = process.env.BOT_TOKEN;
@@ -52,7 +53,8 @@ bot.command("start", async (ctx) => {
       "",
       "Commands:",
       "/plan",
-      "/review"
+      "/review",
+      "/today",
     ].join("\n")
   );
 });
@@ -65,6 +67,10 @@ bot.command("review", async (ctx) => {
   await ctx.conversation.enter("reviewConversation");
 });
 
+bot.command("today", todayCommand);
+bot.catch((err) => {
+  console.error("Bot error:", err);
+});
 bot.start();
 
 console.log("DayForge bot is running.");

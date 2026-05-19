@@ -139,6 +139,32 @@ Current MVP intentionally allows:
 
 This simplifies analytics and prevents duplicate noisy entries.
 
+---
+
+# Shared Package Architecture
+
+DayForge uses a shared package strategy for reusable cross-service logic.
+
+## Shared Package Responsibilities
+
+- Date normalization
+- Timezone utilities
+- Formatting helpers
+- Shared constants
+- Future analytics helpers
+
+## Current Shared Utilities
+
+### Date Utilities
+
+```ts
+todayDate()
+```
+
+Provides normalized day-level date generation for consistent daily persistence queries.
+
+This prevents inconsistent timestamp handling across services.
+
 Future iterations may introduce:
 
 - Edit history
