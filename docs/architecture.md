@@ -37,6 +37,7 @@ PostgreSQL
 
 ```text
 dayforge/
+├── README.md
 ├── apps/
 │   ├── api/
 │   ├── bot/
@@ -48,8 +49,15 @@ dayforge/
 │   └── shared/
 │
 ├── infra/
+│   └── docker/
 │
-└── docs/
+├── docs/
+│   └── architecture.md
+│
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+└── tsconfig.base.json
 ```
 
 ---
@@ -93,6 +101,51 @@ Future web dashboard for:
 - Habit analytics
 - Financial summaries
 - Behavioral insights
+
+---
+
+# Persistence Architecture
+
+DayForge uses PostgreSQL with Prisma ORM for persistent structured behavioral data storage.
+
+## Current Persistence Flow
+
+```text
+Telegram User
+    ↓
+Conversation Flow
+    ↓
+grammY Bot
+    ↓
+Prisma Client
+    ↓
+PostgreSQL
+```
+
+## Current Persistence Features
+
+- Automatic Telegram user registration
+- Daily plan persistence
+- Daily review persistence
+- Daily overwrite protection via composite unique constraints
+- Dockerized PostgreSQL infrastructure
+
+## Current Constraints
+
+Current MVP intentionally allows:
+
+- One plan per user per day
+- One review per user per day
+
+This simplifies analytics and prevents duplicate noisy entries.
+
+Future iterations may introduce:
+
+- Edit history
+- Versioning
+- Multiple daily checkpoints
+- Draft plans
+- Partial updates
 
 ---
 
